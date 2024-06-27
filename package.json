@@ -1,0 +1,45 @@
+{
+  "name": "hubservices",
+  "version": "1.0.0",
+  "type": "module",
+  "license": "MIT",
+  "dependencies": {
+    "@observablehq/runtime": "^5.9.8",
+    "@types/react": "18",
+    "@types/react-dom": "18",
+    "lowcoder-cli": "^0.0.30",
+    "lowcoder-sdk": "^2.4.4",
+    "prop-types": "^15.8.1",
+    "react": "18",
+    "react-dom": "18",
+    "react-resize-detector": "^11.0.1",
+    "typescript": "5.5.2",
+    "user": "^0.0.0",
+    "vite": "^5.3.1"
+  },
+  "lowcoder": {
+    "description": "A lowcoder demo plugin",
+    "comps": {
+      "changeMe": {
+        "name": "lowcoder demo plugin",
+        "icon": "./icons/hills.svg",
+        "description": "A lowcoder demo plugin",
+        "layoutInfo": {
+          "w": 10,
+          "h": 40
+        }
+      }
+    }
+  },
+  "scripts": {
+    "start": "vite --port 5173",
+    "build": "lowcoder-cli build",
+    "build_publish": "lowcoder-cli build --publish"
+  },
+  "description": "## Start",
+  "main": "vite.config.js",
+  "devDependencies": {
+    "tailwindcss": "^3.4.4"
+  },
+  "author": "Hubservices"
+}

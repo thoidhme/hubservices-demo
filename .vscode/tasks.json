@@ -1,0 +1,17 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "tailwindcsWatch",
+            "type": "shell",
+            "command": "npx tailwindcss -i ./tailwindcss-comp-style.css -o ./src/styles.module.css --watch"
+        },
+        {
+            "label": "runDev",
+            "type": "shell",
+            "command": "yarn start"
+        }
+    ]
+}
