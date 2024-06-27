@@ -6,7 +6,7 @@
         {
             "label": "tailwindcsWatch",
             "type": "shell",
-            "command": "npx tailwindcss -i ./tailwindcss-comp-style.css -o ./src/styles.module.css --watch"
+            "command": "npx tailwindcss -i ./tailwindcss-comp-style.css -o ./src/styles.module.css --watch --minify"
         },
         {
             "label": "runDev",

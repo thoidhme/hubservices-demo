@@ -1,8 +1,8 @@
 import { createRoot } from 'react-dom/client';
 import { CompIDE } from "lowcoder-sdk";
 import { name, version, lowcoder } from "./package.json";
-import compMap from "./src/index";
 import "lowcoder-sdk/dist/style.css";
+import compMap from "./src/index";
 
 function CompDevApp() {
   return (

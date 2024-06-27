@@ -15,11 +15,11 @@ import {
 } from "lowcoder-sdk";
 import { useResizeDetector } from "react-resize-detector";
 
-import styles from "./styles.module.css";
+import "./index.css";
 
 import { i18nObjs, trans } from "./i18n/comps";
 
-import { Chart } from './vendors'
+import { Form } from './vendors'
 import { useState } from "react";
 
 
@@ -70,11 +70,11 @@ interface Point {
 }
 
 // const HillchartsCompBase = new UICompBuilder(childrenMap, (props: any) => {
-let HillchartsCompBase = (function () {
+let MainCompBase = (function () {
 
   const childrenMap = {
     styles: styleControl(CompStyles),
-    autoHeight: withDefault(AutoHeightControl, "auto"),
+    autoHeight: withDefault(AutoHeightControl, "fixed"),
     data: jsonControl(toJSONObjectArray, i18nObjs.defaultData),
     onEvent: eventHandlerControl([
       {
@@ -95,7 +95,7 @@ let HillchartsCompBase = (function () {
     props.onEvent("change");
   };
 
-  const [dimensions, setDimensions] = useState({ width: 480, height: 280 });
+  const [dimensions, setDimensions] = useState({ width: 480, height: 1000 });
   const { width, height, ref: conRef } = useResizeDetector({onResize: () =>{
     const container = conRef.current;
     if(!container || !width || !height) return;
@@ -115,18 +115,22 @@ let HillchartsCompBase = (function () {
   }});
 
   return (
-    <div ref={conRef} className={styles.wrapper} style={{
+    <div ref={conRef} style={{
       height: `100%`,
       width: `100%`,
-      backgroundColor: `${props.styles.backgroundColor}`,
-      borderColor: `${props.styles.border}`,
+      backgroundColor: `${props.styles.backgroundColor || 'white'}`,
+      borderColor: `${props.styles.border || '#dddddd'}`,
       borderRadius: `${props.styles.radius}`,
-      borderWidth: `${props.styles.borderWidth}`,
+      borderWidth: `${props.styles.borderWidth || 1}`,
+      borderStyle: 'solid',
       margin: `${props.styles.margin}`,
-      padding: `${props.styles.padding}`,
+      padding: `${props.styles.padding || '5px'}`,
       fontSize: `${props.styles.textSize}`,
+      alignItems: 'center',
+      justifyContent: 'center',
+      display: 'center',
     }}>
-      aaaaaaaaaaaaaaaa
+      <Form/>
     </div>
   );
 })
@@ -149,13 +153,13 @@ let HillchartsCompBase = (function () {
 .build();
 })();
 
-HillchartsCompBase = class extends HillchartsCompBase {
+MainCompBase = class extends MainCompBase {
   autoHeight(): boolean {
     return this.children.autoHeight.getView();
   }
 };
 
-HillchartsCompBase = withMethodExposing(HillchartsCompBase, [
+MainCompBase = withMethodExposing(MainCompBase, [
   {
     method: {
       name: "setPoint",
@@ -187,6 +191,6 @@ HillchartsCompBase = withMethodExposing(HillchartsCompBase, [
   },
 ]);
 
-export default withExposingConfigs(HillchartsCompBase, [
+export default withExposingConfigs(MainCompBase, [
   new NameConfig("data", trans("component.data")),
 ]);
