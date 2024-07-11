@@ -1,12 +1,13 @@
 {
-  "name": "hubservices",
-  "version": "1.0.0",
+  "name": "hubs-custom-html",
+  "version": "2.1.2",
   "type": "module",
   "license": "MIT",
   "dependencies": {
     "@observablehq/runtime": "^5.9.8",
     "@types/react": "18",
     "@types/react-dom": "18",
+    "lodash.debounce": "^4.0.8",
     "lowcoder-cli": "^0.0.30",
     "lowcoder-sdk": "^2.4.4",
     "prop-types": "^15.8.1",
@@ -18,12 +19,12 @@
     "vite": "^5.3.1"
   },
   "lowcoder": {
-    "description": "A lowcoder demo plugin",
+    "description": "A lowcoder plugin",
     "comps": {
-      "changeMe": {
-        "name": "lowcoder demo plugin",
+      "customHtml": {
+        "name": "Custom HTML",
         "icon": "./icons/hills.svg",
-        "description": "A lowcoder demo plugin",
+        "description": "A lowcoder plugin",
         "layoutInfo": {
           "w": 10,
           "h": 40
@@ -39,6 +40,7 @@
   "description": "## Start",
   "main": "vite.config.js",
   "devDependencies": {
+    "@types/lodash": "^4.17.6",
     "autoprefixer": "^10.4.19",
     "postcss": "^8.4.38",
     "tailwindcss": "^3.4.4"

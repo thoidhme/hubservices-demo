@@ -9,7 +9,7 @@ export const { trans, language } = new Translator<typeof localeData.en>(
 );
 
 //@ts-ignore
-export const i18nObjs = getI18nObjects<I18nObjects>(localeData, REACT_APP_LANGUAGES);
+export const i18nObjs: I18nObjects = getI18nObjects<I18nObjects>(localeData, REACT_APP_LANGUAGES);
 
 export function getEchartsLocale() {
   return getValueByLocale("EN", (locale: any) => {
