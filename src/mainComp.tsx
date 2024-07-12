@@ -1,100 +1,31 @@
 import { debounce } from "lodash";
 import {
-  AutoHeightControl,
   NameConfig,
   Section,
   UICompBuilder,
+  withDefault,
   jsonControl,
   stringExposingStateControl,
-  styleControl,
-  toJSONObject,
-  toJSONObjectArray,
   toJSONArray,
-  withDefault,
   getPromiseAfterDispatch,
   withExposingConfigs,
-  CompAction,
+  StringControl,
   routeByNameAction,
   executeQueryAction,
   withMethodExposing,
 } from "lowcoder-sdk";
-import { useResizeDetector } from "react-resize-detector";
 import "./index.css";
 
 import { i18nObjs, trans } from "./i18n/comps";
 
 import { useEffect, useState } from "react";
 
-export const CompStyles = [
-  {
-    name: "margin",
-    label: trans("style.margin"),
-    margin: "margin",
-  },
-  {
-    name: "padding",
-    label: trans("style.padding"),
-    padding: "padding",
-  },
-  {
-    name: "textSize",
-    label: trans("style.textSize"),
-    textSize: "textSize",
-  },
-  {
-    name: "backgroundColor",
-    label: trans("style.backgroundColor"),
-    backgroundColor: "backgroundColor",
-  },
-  {
-    name: "border",
-    label: trans("style.border"),
-    border: "border",
-  },
-  {
-    name: "radius",
-    label: trans("style.borderRadius"),
-    radius: "radius",
-  },
-  {
-    name: "borderWidth",
-    label: trans("style.borderWidth"),
-    borderWidth: "borderWidth",
-  },
-] as const;
-
-interface Point {
-  id: number;
-  color?: string;
-  description?: string;
-  x: number;
-  size?: number;
-}
-const typeOptions = [
-  {
-    label: "Markdown",
-    value: "markdown",
-  },
-  {
-    label: trans("text"),
-    value: "text",
-  },
-] as const;
 // const HillchartsCompBase = new UICompBuilder(childrenMap, (props: any) => {
 let MainCompBase = (function () {
   const childrenMap = {
-    styles: styleControl(CompStyles),
-    autoHeight: withDefault(AutoHeightControl, "fixed"),
-    data: jsonControl(toJSONObject, i18nObjs.defaultData),
-    html: stringExposingStateControl("text", i18nObjs.defaultData.html),
-    stylesheet: stringExposingStateControl(
-      "text",
-      i18nObjs.defaultData.stylesheet
-    ),
-    javascript: stringExposingStateControl(
-      "text",
-      i18nObjs.defaultData.javascript
-    ),
+    html: withDefault(StringControl, i18nObjs.defaultData.html),
+    stylesheet: withDefault(StringControl, i18nObjs.defaultData.stylesheet),
+    javascript: withDefault(StringControl, i18nObjs.defaultData.javascript),
     cssFiles: jsonControl(toJSONArray, i18nObjs.defaultData.cssFiles),
     jsFiles: jsonControl(toJSONArray, i18nObjs.defaultData.jsFiles),
   };
@@ -103,15 +34,6 @@ let MainCompBase = (function () {
     childrenMap,
     (
       props: {
-        styles: {
-          backgroundColor: any;
-          border: any;
-          radius: any;
-          borderWidth: any;
-          margin: any;
-          padding: any;
-          textSize: any;
-        };
         html: any;
         stylesheet: any;
         javascript: any;
@@ -121,34 +43,6 @@ let MainCompBase = (function () {
       },
       dispatch: any
     ) => {
-      const [dimensions, setDimensions] = useState({
-        width: 480,
-        height: 1000,
-      });
-      const {
-        width,
-        height,
-        ref: conRef,
-      } = useResizeDetector({
-        onResize: () => {
-          const container = conRef.current;
-          if (!container || !width || !height) return;
-
-          if (props.autoHeight) {
-            setDimensions({
-              width,
-              height: dimensions.height,
-            });
-            return;
-          }
-
-          setDimensions({
-            width,
-            height,
-          });
-        },
-      });
-
       const debouncedScript = (content: any, type: string) => {
         const scripts: any[] = [];
         const existingScripts = document.querySelectorAll(
@@ -225,7 +119,7 @@ let MainCompBase = (function () {
 
       useEffect(() => {
         const debounced = debounce(debouncedScript, 1000);
-        debounced(props.javascript.value, "dynamic");
+        debounced(props.javascript, "dynamic");
         return () => {
           debounced.cancel();
         };
@@ -249,7 +143,7 @@ let MainCompBase = (function () {
 
       return (
         <>
-          <style>{props.stylesheet.value}</style>
+          <style>{props.stylesheet}</style>
           <div
             style={{
               width: "100%",
@@ -258,7 +152,7 @@ let MainCompBase = (function () {
               justifyContent: "center",
               alignItems: "center",
             }}
-            dangerouslySetInnerHTML={{ __html: props.html.value }}
+            dangerouslySetInnerHTML={{ __html: props.html }}
           />
         </>
       );
@@ -280,47 +174,13 @@ let MainCompBase = (function () {
     .build();
 })();
 
-MainCompBase = class extends MainCompBase {
-  autoHeight(): boolean {
-    return this.children.autoHeight.getView();
-  }
-};
-
 MainCompBase = withMethodExposing(MainCompBase, [
-  {
-    method: {
-      name: "setPoint",
-      description: trans("methods.setPoint"),
-      params: [
-        {
-          name: "data",
-          type: "JSON",
-          description: "JSON value",
-        },
-      ],
-    },
-    execute: (comp: any, values: any[]) => {
-      const point = values[0] as Point;
-      if (typeof point !== "object") {
-        return Promise.reject(trans("methods.invalidInput"));
-      }
-      if (!point.id) {
-        return Promise.reject(trans("methods.requiredField", { field: "ID" }));
-      }
-      if (!point.x) {
-        return Promise.reject(
-          trans("methods.requiredField", { field: "X position" })
-        );
-      }
-      const data = comp.children.data.getView();
-      const newData = [...data, point];
-      comp.children.data.dispatchChangeValueAction(
-        JSON.stringify(newData, null, 2)
-      );
-    },
-  },
 ]);
 
 export default withExposingConfigs(MainCompBase, [
-  new NameConfig("data", trans("component.data")),
+  new NameConfig("html", trans("component.html")),
+  new NameConfig("stylesheet", trans("component.stylesheet")),
+  new NameConfig("javascript", trans("component.javascript")),
+  new NameConfig("cssFiles", trans("component.cssFiles")),
+  new NameConfig("jsFiles", trans("component.jsFiles")),
 ]);
